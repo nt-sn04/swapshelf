@@ -8,7 +8,7 @@ from keyboards.inline import (
     get_status_keyboard,
     get_type_keyboard,
 )
-from db.books import create_book
+from db.books import create_book, get_my_books
 
 
 def ask_title(update: Update, context: CallbackContext) -> int:
@@ -88,3 +88,16 @@ def add_book(update: Update, context: CallbackContext) -> int:
     )
 
     return ConversationHandler.END
+
+
+def show_my_books(update: Update, context: CallbackContext) -> None:
+    update.callback_query.answer()
+
+    books = get_my_books(update.effective_user.id)
+    if not books:
+        update.callback_query.edit_message_text("Sizning javoningizda kitob yo'q.")
+        return
+    message = "Sizning javoningizdagi kitoblar:\n\n"
+    for pk, title, author, genre, status, type_ in books:
+        message += f"📖 {title}\n✍️ {author}\n📚 {genre}\n🔖 {status}\n🔄 {type_}\n\n"
+    update.callback_query.edit_message_text(message)

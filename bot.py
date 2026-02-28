@@ -66,6 +66,10 @@ def main() -> None:
         )
     )
 
+    dispatcher.add_handler(
+        CallbackQueryHandler(shelf.show_my_books, pattern="my_books")
+    )
+
     updater.start_polling()
     updater.idle()
 
