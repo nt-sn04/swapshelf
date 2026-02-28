@@ -1,4 +1,4 @@
-from telegram import Update, user
+from telegram import Update
 from telegram.ext import CallbackContext, ConversationHandler
 
 from utils import states

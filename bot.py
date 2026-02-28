@@ -9,7 +9,7 @@ from telegram.ext import (
 
 from config import settings
 from utils import states
-from handlers import start
+from handlers import start, shelf
 
 
 def main() -> None:
@@ -21,14 +21,44 @@ def main() -> None:
         ConversationHandler(
             entry_points=[CommandHandler("start", start.start)],
             states={
-                states.SET_NAME: [
+                states.RegistrationStates.SET_NAME: [
                     MessageHandler(Filters.text & ~Filters.command, start.set_name)
                 ],
-                states.SET_PHONE: [
+                states.RegistrationStates.SET_PHONE: [
                     MessageHandler(Filters.text & ~Filters.command, start.set_phone)
                 ],
-                states.CONFIRM: [
+                states.RegistrationStates.CONFIRM: [
                     CallbackQueryHandler(start.register, pattern="^(ha)$"),
+                    CallbackQueryHandler(start.start, pattern="^(yo'q)$"),
+                ],
+            },
+            fallbacks=[CommandHandler("start", start.start)],
+        )
+    )
+
+    dispatcher.add_handler(
+        ConversationHandler(
+            entry_points=[
+                CallbackQueryHandler(shelf.ask_title, pattern="^(add_book)$")
+            ],
+            states={
+                states.AddBookStates.SET_TITLE: [
+                    MessageHandler(Filters.text & ~Filters.command, shelf.set_title)
+                ],
+                states.AddBookStates.SET_AUTHOR: [
+                    MessageHandler(Filters.text & ~Filters.command, shelf.set_author)
+                ],
+                states.AddBookStates.SET_GENRE: [
+                    CallbackQueryHandler(shelf.set_genre, pattern="add_book:genre:")
+                ],
+                states.AddBookStates.SET_STATUS: [
+                    CallbackQueryHandler(shelf.set_status, pattern="add_book:status:")
+                ],
+                states.AddBookStates.TYPE: [
+                    CallbackQueryHandler(shelf.set_type, pattern="add_book:type:")
+                ],
+                states.AddBookStates.CONFIRM: [
+                    CallbackQueryHandler(shelf.add_book, pattern="^(ha)$"),
                     CallbackQueryHandler(start.start, pattern="^(yo'q)$"),
                 ],
             },
