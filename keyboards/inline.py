@@ -38,22 +38,22 @@ def get_status_keyboard():
     keyboard = [
         [
             InlineKeyboardButton(
-                "🆕 Yangi, ishlatilmagan", callback_data="add_book:status:new"
+                "🆕 Yangi, ishlatilmagan", callback_data="add_book:status:New"
             )
         ],
         [
             InlineKeyboardButton(
-                "👍 Yaxshi holatda", callback_data="add_book:status:good"
+                "👍 Yaxshi holatda", callback_data="add_book:status:Good"
             )
         ],
         [
             InlineKeyboardButton(
-                "👌 O'rtacha holatda", callback_data="add_book:status:fair"
+                "👌 O'rtacha holatda", callback_data="add_book:status:Fair"
             )
         ],
         [
             InlineKeyboardButton(
-                "📄 Ko'p ishlatilgan", callback_data="add_book:status:worn"
+                "📄 Ko'p ishlatilgan", callback_data="add_book:status:Worn"
             )
         ],
     ]
@@ -64,17 +64,17 @@ def get_type_keyboard():
     keyboard = [
         [
             InlineKeyboardButton(
-                "🔄 Vaqtincha (30 kun muddatli)", callback_data="add_book:type:borrow"
+                "🔄 Vaqtincha (30 kun muddatli)", callback_data="add_book:type:Borrow"
             )
         ],
         [
             InlineKeyboardButton(
-                "🎁 Doimiy berib yuborish", callback_data="add_book:type:permanent"
+                "🎁 Doimiy berib yuborish", callback_data="add_book:type:Permanent"
             )
         ],
         [
             InlineKeyboardButton(
-                "🔀 Ikkalasi ham mumkin", callback_data="add_book:type:both"
+                "🔀 Ikkalasi ham mumkin", callback_data="add_book:type:Both"
             )
         ],
     ]

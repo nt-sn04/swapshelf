@@ -8,6 +8,7 @@ from keyboards.inline import (
     get_status_keyboard,
     get_type_keyboard,
 )
+from db.books import create_book
 
 
 def ask_title(update: Update, context: CallbackContext) -> int:
@@ -76,5 +77,14 @@ def add_book(update: Update, context: CallbackContext) -> int:
     query = update.callback_query
     query.answer()
     query.edit_message_text("Kitob qo'shildi! Rahmat!")
-    # Bu yerda kitob ma'lumotlarini bazaga saqlash kodini yozish kerak
+
+    create_book(
+        telegram_id=update.effective_user.id,
+        title=context.user_data["title"],
+        author=context.user_data["author"],
+        genre_id=context.user_data["genre"],
+        status=context.user_data["status"],
+        type_=context.user_data["type"],
+    )
+
     return ConversationHandler.END
