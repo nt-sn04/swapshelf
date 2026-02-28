@@ -14,5 +14,8 @@ def create_user(telegram_id, name, phone):
 def get_user(telegram_id):
     db = get_db_connection()
     with db.cursor() as cursor:
-        cursor.execute("SELECT * FROM users WHERE telegram_id = %s", (telegram_id,))
+        cursor.execute(
+            "SELECT id, telegram_id, full_name, phone_number FROM users WHERE telegram_id = %s",
+            (telegram_id,),
+        )
         return cursor.fetchone()
