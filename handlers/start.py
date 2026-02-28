@@ -3,9 +3,15 @@ from telegram.ext import CallbackContext, ConversationHandler
 
 from utils import states
 from keyboards.inline import get_confirm_keyboard
+from db.users import create_user, get_user
 
 
 def start(update: Update, context: CallbackContext) -> int:
+    existing_user = get_user(update.effective_user.id)
+    if existing_user:
+        update.message.reply_text("Siz allaqachon ro'yxatdan o'tgansiz!")
+        return ConversationHandler.END
+
     context.bot.send_message(
         chat_id=update.effective_chat.id, text="Assalomu alaykum! Ismingizni kiriting:"
     )
@@ -37,6 +43,9 @@ def register(update: Update, context: CallbackContext) -> int:
     query.answer()
     query.edit_message_text("Ro'yxatdan o'tdingiz! Rahmat!")
 
-    # Bu yerda ma'lumotlarni bazaga saqlash yoki boshqa amallarni bajarish mumkin
+    user_id = update.effective_user.id
+    name = context.user_data["name"]
+    phone = context.user_data["phone"]
+    create_user(user_id, name, phone)
 
     return ConversationHandler.END
