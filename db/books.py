@@ -18,10 +18,13 @@ def create_book(telegram_id, title, author, genre_id, status, type_):
                 (SELECT id FROM users WHERE telegram_id = %s),
                 %s, %s, %s, %s, %s
             )
+            RETURNING id
             """,
             (telegram_id, title, author, genre_id, status, type_),
         )
+        book_id = cursor.fetchone()[0]
     db.commit()
+    return book_id
 
 
 def get_my_books(telegram_id):
@@ -37,3 +40,18 @@ def get_my_books(telegram_id):
             (telegram_id,),
         )
         return cursor.fetchall()
+
+
+def get_book(book_id):
+    db = get_db_connection()
+    with db.cursor() as cursor:
+        cursor.execute(
+            """
+            SELECT b.id, b.title, b.author, g.name AS genre, b.status, b.type
+            FROM books b
+            JOIN genres g ON b.genre_id = g.id
+            WHERE b.id = %s
+            """,
+            (book_id,),
+        )
+        return cursor.fetchone()

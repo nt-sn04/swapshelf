@@ -5,10 +5,14 @@ from utils import states
 from keyboards.inline import (
     get_confirm_keyboard,
     get_genre_keyboard,
+    get_menu_keyboard,
     get_status_keyboard,
     get_type_keyboard,
+    get_book_action_keyboard,
+    get_book_request_keyboard,
 )
-from db.books import create_book, get_my_books
+from db.books import create_book, get_my_books, get_book
+from config import settings
 
 
 def ask_title(update: Update, context: CallbackContext) -> int:
@@ -78,13 +82,19 @@ def add_book(update: Update, context: CallbackContext) -> int:
     query.answer()
     query.edit_message_text("Kitob qo'shildi! Rahmat!")
 
-    create_book(
+    book_id = create_book(
         telegram_id=update.effective_user.id,
         title=context.user_data["title"],
         author=context.user_data["author"],
         genre_id=context.user_data["genre"],
         status=context.user_data["status"],
         type_=context.user_data["type"],
+    )
+
+    context.bot.send_message(
+        chat_id=update.effective_chat.id,
+        text=f"📖 {context.user_data['title']}\n✍️ {context.user_data['author']}\n📚 {context.user_data['genre']}\n🔖 {context.user_data['status']}\n🔄 {context.user_data['type']}\n\n",
+        reply_markup=get_book_action_keyboard(book_id),
     )
 
     return ConversationHandler.END
@@ -101,3 +111,20 @@ def show_my_books(update: Update, context: CallbackContext) -> None:
     for pk, title, author, genre, status, type_ in books:
         message += f"📖 {title}\n✍️ {author}\n📚 {genre}\n🔖 {status}\n🔄 {type_}\n\n"
     update.callback_query.edit_message_text(message)
+
+
+def share_book(update: Update, context: CallbackContext) -> None:
+    query = update.callback_query
+    query.answer()
+    book_id = query.data.split(":")[-1]
+    book = get_book(book_id)
+    if not book:
+        query.edit_message_text("Kitob topilmadi.")
+        return
+    title, author, genre, status, type_ = book[1], book[2], book[3], book[4], book[5]
+    context.bot.send_message(
+        chat_id=settings.CHANNEL_ID,
+        text=f"📖 {title}\n✍️ {author}\n📚 {genre}\n🔖 {status}\n🔄 {type_}\n",
+        reply_markup=get_book_request_keyboard(book_id),
+    )
+    query.edit_message_text("Kitob almashish uchun kanalga yuborildi!")

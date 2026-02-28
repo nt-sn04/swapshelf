@@ -79,3 +79,21 @@ def get_type_keyboard():
         ],
     ]
     return InlineKeyboardMarkup(keyboard)
+
+
+def get_book_action_keyboard(book_id):
+    keyboard = [
+        [InlineKeyboardButton("🎁 Kitobni Ulashish", callback_data=f"share:{book_id}")],
+    ]
+    return InlineKeyboardMarkup(keyboard)
+
+
+def get_book_request_keyboard(book_id):
+    keyboard = [
+        [
+            InlineKeyboardButton(
+                "✅ Kitobni olish uling", callback_data=f"request:{book_id}"
+            ),
+        ]
+    ]
+    return InlineKeyboardMarkup(keyboard)

@@ -70,6 +70,8 @@ def main() -> None:
         CallbackQueryHandler(shelf.show_my_books, pattern="my_books")
     )
 
+    dispatcher.add_handler(CallbackQueryHandler(shelf.share_book, pattern="share:"))
+
     updater.start_polling()
     updater.idle()
 
