@@ -1,0 +1,1 @@
+SET_NAME, SET_PHONE, CONFIRM = range(3)
